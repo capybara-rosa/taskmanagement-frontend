@@ -123,3 +123,21 @@ All task endpoints require a `Bearer <token>` header. The token is stored in `lo
 4. **Move a task** — drag a card from one column and drop it on another to update its status
 5. **Edit a task** — double-click a card, or click the **Edit** button on the card
 6. **Delete a task** — click the **Delete** button on a card and confirm the prompt
+
+# Pipeline flow
+Pipeline flow
+
+push to main / PR
+│
+├── lint          ESLint + Prettier check
+├── typecheck      tsc --noEmit                                                                                                                                                                                                                                                                                                                                  
+│
+└── build         tsc -b && vite build  (needs lint + typecheck)                                                                                                                                                                                                                                                                                                 
+│                                                                                                                                                                                                                                                                                                                                                        
+└── docker  (main push only)                                                                                                                                                                                                                                                                                                                             
+Build multi-arch image (amd64 + arm64)                                                                                                                                                                                                                                                                                                             
+Push to GHCR with tags: latest + sha-<short>
+│                                                                                                                                                                                                                                                                                                                                            
+└── ArgoCD Image Updater       
+Detects new sha- tag → patches deployment                                                                                                                                                                                                                                                                                              
+ArgoCD auto-syncs cluster

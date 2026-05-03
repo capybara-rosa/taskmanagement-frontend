@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-manager
+  namespace: task-manager
+  labels:
+    app.kubernetes.io/name: task-manager
+  annotations:
+    # ArgoCD Image Updater — watches GHCR for new sha- tags and updates this deployment automatically
+    # Replace OWNER/REPO with your GitHub org/repo (e.g. myorg/task-manager)
+    argocd-image-updater.argoproj.io/image-list: webapp=ghcr.io/OWNER/REPO
+    argocd-image-updater.argoproj.io/webapp.update-strategy: latest
+    argocd-image-updater.argoproj.io/webapp.allow-tags: regexp:^sha-
+    argocd-image-updater.argoproj.io/write-back-method: git
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: task-manager
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: task-manager
+    spec:
+      # Uncomment if GHCR package is private:
+      # imagePullSecrets:
+      #   - name: ghcr-pull-secret
+      containers:
+        - name: task-manager
+          # Image tag is managed by ArgoCD Image Updater; set your initial image here
+          image: ghcr.io/capybara-rosa/taskmanagement-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
