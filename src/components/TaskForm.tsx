@@ -28,8 +28,11 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
       <h2 className="mb-4 text-xl font-bold">{task ? 'Edit Task' : 'New Task'}</h2>
 
       <div className="mb-4">
-        <label className="mb-1 block text-sm font-medium">Title</label>
+        <label htmlFor="task-title" className="mb-1 block text-sm font-medium">
+          Title
+        </label>
         <input
+          id="task-title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -41,8 +44,11 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
       </div>
 
       <div className="mb-4">
-        <label className="mb-1 block text-sm font-medium">Description</label>
+        <label htmlFor="task-description" className="mb-1 block text-sm font-medium">
+          Description
+        </label>
         <textarea
+          id="task-description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           maxLength={200}
@@ -52,8 +58,11 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
       </div>
 
       <div className="mb-4">
-        <label className="mb-1 block text-sm font-medium">Status</label>
+        <label htmlFor="task-status" className="mb-1 block text-sm font-medium">
+          Status
+        </label>
         <select
+          id="task-status"
           value={status}
           onChange={(e) => setStatus(e.target.value as TaskStatus)}
           className="w-full rounded border px-3 py-2"
@@ -65,8 +74,11 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
       </div>
 
       <div className="mb-4">
-        <label className="mb-1 block text-sm font-medium">Due Date</label>
+        <label htmlFor="task-due-at" className="mb-1 block text-sm font-medium">
+          Due Date
+        </label>
         <input
+          id="task-due-at"
           type="datetime-local"
           value={dueAt}
           onChange={(e) => setDueAt(e.target.value)}

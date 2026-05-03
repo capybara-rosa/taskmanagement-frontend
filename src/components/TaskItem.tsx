@@ -51,7 +51,7 @@ export function TaskItem({ task, onEdit, onDelete }: Props) {
 
       <p className="mb-3 text-xs text-neutral-400">
         Due{' '}
-        {new Date(task.dueAt).toLocaleDateString(undefined, {
+        {new Date(task.dueAt).toLocaleDateString('en-UK', {
           month: 'short',
           day: 'numeric',
           year: 'numeric',

@@ -4,11 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import checker from 'vite-plugin-checker'
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-    checker({ typescript: true }), // 👈 enables TS type checking in dev
-  ],
+  plugins: [react(), tailwindcss(), checker({ typescript: true })],
   server: {
     proxy: {
       '/api': {
