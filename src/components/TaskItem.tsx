@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Task } from '../types'
 
 interface Props {
@@ -7,36 +8,56 @@ interface Props {
 }
 
 const statusColors = {
-  TODO: 'bg-gray-100 text-gray-800',
-  IN_PROGRESS: 'bg-blue-100 text-blue-800',
-  DONE: 'bg-green-100 text-green-800',
+  TODO: 'bg-neutral-100 text-neutral-600',
+  IN_PROGRESS: 'bg-blue-50 text-blue-700',
+  DONE: 'bg-green-50 text-green-700',
+}
+
+const statusLabels = {
+  TODO: 'To Do',
+  IN_PROGRESS: 'In Progress',
+  DONE: 'Done',
 }
 
 export function TaskItem({ task, onEdit, onDelete }: Props) {
+  const [isDragging, setIsDragging] = useState(false)
+
   return (
-    <div className="rounded-lg border bg-white p-4 shadow-sm">
-      <div className="mb-2 flex items-start justify-between">
-        <h3 className="text-lg font-semibold">{task.title}</h3>
-        <span className={`rounded px-2 py-1 text-sm ${statusColors[task.status]}`}>
-          {task.status.replace('_', ' ')}
+    <div
+      draggable
+      onDoubleClick={() => onEdit(task)}
+      onDragStart={(e) => {
+        e.dataTransfer.setData('taskId', task.id.toString())
+        e.dataTransfer.effectAllowed = 'move'
+        setIsDragging(true)
+      }}
+      onDragEnd={() => setIsDragging(false)}
+      className={`cursor-grab rounded-lg border border-neutral-200 bg-white p-4 shadow-sm transition-opacity duration-150 active:cursor-grabbing ${
+        isDragging ? 'opacity-40' : 'opacity-100'
+      }`}
+    >
+      <div className="mb-2 flex items-start justify-between gap-2">
+        <h3 className="text-sm font-semibold leading-snug text-neutral-900">{task.title}</h3>
+        <span
+          className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[task.status]}`}
+        >
+          {statusLabels[task.status]}
         </span>
       </div>
 
-      {task.description && <p className="mb-2 text-gray-600">{task.description}</p>}
+      {task.description && (
+        <p className="mb-3 text-xs leading-relaxed text-neutral-500">{task.description}</p>
+      )}
 
-      <p className="mb-3 text-sm text-gray-500">Due: {new Date(task.dueAt).toLocaleDateString()}</p>
+      <p className="mb-3 text-xs text-neutral-400">
+        Due {new Date(task.dueAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+      </p>
 
       <div className="flex gap-2">
-        <button
-          onClick={() => onEdit(task)}
-          className="rounded bg-blue-500 px-3 py-1 text-sm text-white hover:bg-blue-600"
-        >
+        <button onClick={() => onEdit(task)} className="edit-button-style">
           Edit
         </button>
-        <button
-          onClick={() => onDelete(task.id)}
-          className="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
-        >
+        <button onClick={() => onDelete(task.id)} className="delete-button-style">
           Delete
         </button>
       </div>

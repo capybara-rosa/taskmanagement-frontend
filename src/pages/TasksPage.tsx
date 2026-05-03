@@ -1,27 +1,29 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { tasksApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 import { TaskList } from '../components/TaskList'
 import { TaskForm } from '../components/TaskForm'
-import type { Task, TaskRequest } from '../types'
+import type { Task, TaskRequest, TaskStatus } from '../types'
+
+const STATUSES: TaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE']
+
+function sortByDueDateAsc(tasks: Task[]): Task[] {
+  return [...tasks].sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime())
+}
 
 export function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [showForm, setShowForm] = useState(false)
-  const [page, setPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
   const { logout } = useAuth()
   const navigate = useNavigate()
 
   const loadTasks = async () => {
     try {
-      const data = await tasksApi.getAll(page, 9)
+      const data = await tasksApi.getAll(0, 100)
       setTasks(data.content)
-      setTotalPages(data.totalPages)
     } catch {
-      // Token expired or invalid
       logout()
       navigate('/login')
     }
@@ -29,7 +31,19 @@ export function TasksPage() {
 
   useEffect(() => {
     loadTasks()
-  }, [page])
+  }, [])
+
+  const columnTasks = useMemo(() => {
+    const groups: Record<TaskStatus, Task[]> = { TODO: [], IN_PROGRESS: [], DONE: [] }
+    for (const task of tasks) {
+      groups[task.status].push(task)
+    }
+    return {
+      TODO: sortByDueDateAsc(groups.TODO),
+      IN_PROGRESS: sortByDueDateAsc(groups.IN_PROGRESS),
+      DONE: sortByDueDateAsc(groups.DONE),
+    }
+  }, [tasks])
 
   const handleCreate = async (data: TaskRequest) => {
     await tasksApi.create(data)
@@ -63,64 +77,70 @@ export function TasksPage() {
     setShowForm(false)
   }
 
+  const handleDrop = async (taskId: number, newStatus: TaskStatus) => {
+    const task = tasks.find((t) => t.id === taskId)
+    if (!task || task.status === newStatus) return
+    try {
+      await tasksApi.update(taskId, {
+        title: task.title,
+        description: task.description,
+        status: newStatus,
+        dueAt: task.dueAt,
+      })
+      loadTasks()
+    } catch {
+      // no-op — user can retry by dragging again
+    }
+  }
+
   const handleLogout = () => {
     logout()
     navigate('/login')
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <h1 className="text-2xl font-bold">Task Manager</h1>
-          <button onClick={handleLogout} className="text-gray-600 hover:text-gray-900">
-            Logout
-          </button>
+    <div className="min-h-screen bg-neutral-50">
+      <header className="header px-6 py-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between">
+          <h1 className="text-lg font-semibold text-neutral-900">Task Manager</h1>
+          <div className="flex items-center gap-3">
+            {!showForm && (
+              <button onClick={() => setShowForm(true)} className="new-task-style">
+                + New Task
+              </button>
+            )}
+            <button
+              onClick={handleLogout}
+              className="text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="mx-auto max-w-7xl px-6 py-8">
         {showForm ? (
-          <TaskForm
-            task={editingTask}
-            onSubmit={editingTask ? handleUpdate : handleCreate}
-            onCancel={handleCancel}
-          />
+          <div className="mx-auto max-w-lg">
+            <TaskForm
+              task={editingTask}
+              onSubmit={editingTask ? handleUpdate : handleCreate}
+              onCancel={handleCancel}
+            />
+          </div>
         ) : (
-          <>
-            <div className="mb-6">
-              <button
-                onClick={() => setShowForm(true)}
-                className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-              >
-                + New Task
-              </button>
-            </div>
-
-            <TaskList tasks={tasks} onEdit={handleEdit} onDelete={handleDelete} />
-
-            {totalPages > 1 && (
-              <div className="mt-6 flex justify-center gap-2">
-                <button
-                  onClick={() => setPage((p) => Math.max(0, p - 1))}
-                  disabled={page === 0}
-                  className="rounded border px-3 py-1 disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <span className="px-3 py-1">
-                  Page {page + 1} of {totalPages}
-                </span>
-                <button
-                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                  disabled={page >= totalPages - 1}
-                  className="rounded border px-3 py-1 disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
-            )}
-          </>
+          <div className="grid grid-cols-3 gap-4">
+            {STATUSES.map((status) => (
+              <TaskList
+                key={status}
+                status={status}
+                tasks={columnTasks[status]}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onDrop={handleDrop}
+              />
+            ))}
+          </div>
         )}
       </main>
     </div>
