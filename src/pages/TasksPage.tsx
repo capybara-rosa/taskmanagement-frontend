@@ -32,10 +32,9 @@ export function TasksPage() {
       const data = await tasksApi.getAll(0, 100)
       setTasks(data.content)
     } catch {
-      logout()
-      navigate('/login')
+      setErrorMessage('Failed to load tasks. Please try again.')
     }
-  }, [logout, navigate])
+  }, [])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

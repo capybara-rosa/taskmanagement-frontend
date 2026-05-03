@@ -116,9 +116,9 @@ describe('TasksPage', () => {
     await waitFor(() => expect(screen.getByText(/failed to delete task/i)).toBeInTheDocument())
   })
 
-  it('redirects to /login on auth error', async () => {
-    vi.mocked(client.tasksApi.getAll).mockRejectedValue(new Error('401'))
+  it('shows an error toast when load fails', async () => {
+    vi.mocked(client.tasksApi.getAll).mockRejectedValue(new Error('network error'))
     renderPage()
-    await waitFor(() => expect(screen.getByText('Login')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText(/failed to load tasks/i)).toBeInTheDocument())
   })
 })
