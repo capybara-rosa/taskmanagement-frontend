@@ -13,13 +13,13 @@ A React + TypeScript task management frontend that connects to a REST backend. T
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React 19 + TypeScript |
-| Build tool | Vite 8 |
-| Styling | Tailwind CSS v4 |
-| HTTP client | Axios |
-| Routing | React Router v7 |
+| Layer       | Technology            |
+| ----------- | --------------------- |
+| Framework   | React 19 + TypeScript |
+| Build tool  | Vite 8                |
+| Styling     | Tailwind CSS v4       |
+| HTTP client | Axios                 |
+| Routing     | React Router v7       |
 
 ## Prerequisites
 
@@ -57,14 +57,14 @@ Open `http://localhost:5173/tasks` in your browser. If you are not logged in you
 
 ## Available Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start the Vite dev server with HMR |
-| `npm run build` | Type-check and build for production |
-| `npm run preview` | Serve the production build locally |
+| Command              | Description                                   |
+| -------------------- | --------------------------------------------- |
+| `npm run dev`        | Start the Vite dev server with HMR            |
+| `npm run build`      | Type-check and build for production           |
+| `npm run preview`    | Serve the production build locally            |
 | `npm run type-check` | Run TypeScript type checking without emitting |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format all files with Prettier |
+| `npm run lint`       | Run ESLint                                    |
+| `npm run format`     | Format all files with Prettier                |
 
 ## Project Structure
 
@@ -94,26 +94,26 @@ The frontend expects a REST API at `http://localhost:4000`. The full API contrac
 
 ### Key endpoints
 
-| Method | Path | Description |
-|---|---|---|
-| `POST` | `/api/v1/auth/register` | Register a new user |
-| `POST` | `/api/v1/auth/login` | Login and receive a JWT |
-| `GET` | `/api/v1/tasks` | List tasks (paginated) |
-| `POST` | `/api/v1/tasks` | Create a task |
-| `PUT` | `/api/v1/tasks/{id}` | Update a task |
-| `DELETE` | `/api/v1/tasks/{id}` | Delete a task |
+| Method   | Path                    | Description             |
+| -------- | ----------------------- | ----------------------- |
+| `POST`   | `/api/v1/auth/register` | Register a new user     |
+| `POST`   | `/api/v1/auth/login`    | Login and receive a JWT |
+| `GET`    | `/api/v1/tasks`         | List tasks (paginated)  |
+| `POST`   | `/api/v1/tasks`         | Create a task           |
+| `PUT`    | `/api/v1/tasks/{id}`    | Update a task           |
+| `DELETE` | `/api/v1/tasks/{id}`    | Delete a task           |
 
 All task endpoints require a `Bearer <token>` header. The token is stored in `localStorage` and attached automatically by the Axios request interceptor.
 
 ### Task validation rules
 
-| Field | Constraint |
-|---|---|
-| `title` | Required, 10–50 characters |
-| `description` | Optional, max 200 characters |
-| `status` | `TODO` \| `IN_PROGRESS` \| `DONE` |
-| `dueAt` | Required, ISO 8601 date-time |
-| `password` | Min 8 chars, must include uppercase, lowercase, number, and special character |
+| Field         | Constraint                                                                    |
+| ------------- | ----------------------------------------------------------------------------- |
+| `title`       | Required, 10–50 characters                                                    |
+| `description` | Optional, max 200 characters                                                  |
+| `status`      | `TODO` \| `IN_PROGRESS` \| `DONE`                                             |
+| `dueAt`       | Required, ISO 8601 date-time                                                  |
+| `password`    | Min 8 chars, must include uppercase, lowercase, number, and special character |
 
 ## Usage Walkthrough
 
@@ -125,19 +125,20 @@ All task endpoints require a `Bearer <token>` header. The token is stored in `lo
 6. **Delete a task** — click the **Delete** button on a card and confirm the prompt
 
 # Pipeline flow
+
 Pipeline flow
 
 push to main / PR
 │
-├── lint          ESLint + Prettier check
-├── typecheck      tsc --noEmit                                                                                                                                                                                                                                                                                                                                  
+├── lint ESLint + Prettier check
+├── typecheck tsc --noEmit  
 │
-└── build         tsc -b && vite build  (needs lint + typecheck)                                                                                                                                                                                                                                                                                                 
-│                                                                                                                                                                                                                                                                                                                                                        
-└── docker  (main push only)                                                                                                                                                                                                                                                                                                                             
-Build multi-arch image (amd64 + arm64)                                                                                                                                                                                                                                                                                                             
+└── build tsc -b && vite build (needs lint + typecheck)  
+│  
+└── docker (main push only)  
+Build multi-arch image (amd64 + arm64)  
 Push to GHCR with tags: latest + sha-<short>
-│                                                                                                                                                                                                                                                                                                                                            
-└── ArgoCD Image Updater       
-Detects new sha- tag → patches deployment                                                                                                                                                                                                                                                                                              
+│  
+└── ArgoCD Image Updater  
+Detects new sha- tag → patches deployment  
 ArgoCD auto-syncs cluster

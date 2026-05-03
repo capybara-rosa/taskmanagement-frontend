@@ -37,7 +37,7 @@ export function TaskItem({ task, onEdit, onDelete }: Props) {
       }`}
     >
       <div className="mb-2 flex items-start justify-between gap-2">
-        <h3 className="text-sm font-semibold leading-snug text-neutral-900">{task.title}</h3>
+        <h3 className="text-sm leading-snug font-semibold text-neutral-900">{task.title}</h3>
         <span
           className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[task.status]}`}
         >
@@ -50,7 +50,12 @@ export function TaskItem({ task, onEdit, onDelete }: Props) {
       )}
 
       <p className="mb-3 text-xs text-neutral-400">
-        Due {new Date(task.dueAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+        Due{' '}
+        {new Date(task.dueAt).toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })}
       </p>
 
       <div className="flex gap-2">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { tasksApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
@@ -19,7 +19,7 @@ export function TasksPage() {
   const { logout } = useAuth()
   const navigate = useNavigate()
 
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
     try {
       const data = await tasksApi.getAll(0, 100)
       setTasks(data.content)
@@ -27,11 +27,12 @@ export function TasksPage() {
       logout()
       navigate('/login')
     }
-  }
+  }, [logout, navigate])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadTasks()
-  }, [])
+  }, [loadTasks])
 
   const columnTasks = useMemo(() => {
     const groups: Record<TaskStatus, Task[]> = { TODO: [], IN_PROGRESS: [], DONE: [] }
@@ -123,6 +124,7 @@ export function TasksPage() {
         {showForm ? (
           <div className="mx-auto max-w-lg">
             <TaskForm
+              key={editingTask?.id ?? 'new'}
               task={editingTask}
               onSubmit={editingTask ? handleUpdate : handleCreate}
               onCancel={handleCancel}

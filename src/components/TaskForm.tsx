@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { Task, TaskRequest, TaskStatus } from '../types'
 
 interface Props {
@@ -8,24 +8,10 @@ interface Props {
 }
 
 export function TaskForm({ task, onSubmit, onCancel }: Props) {
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [status, setStatus] = useState<TaskStatus>('TODO')
-  const [dueAt, setDueAt] = useState('')
-
-  useEffect(() => {
-    if (task) {
-      setTitle(task.title)
-      setDescription(task.description || '')
-      setStatus(task.status)
-      setDueAt(task.dueAt.slice(0, 16))
-    } else {
-      setTitle('')
-      setDescription('')
-      setStatus('TODO')
-      setDueAt('')
-    }
-  }, [task])
+  const [title, setTitle] = useState(task?.title ?? '')
+  const [description, setDescription] = useState(task?.description ?? '')
+  const [status, setStatus] = useState<TaskStatus>(task?.status ?? 'TODO')
+  const [dueAt, setDueAt] = useState(task ? task.dueAt.slice(0, 16) : '')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()

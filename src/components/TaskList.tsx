@@ -66,7 +66,9 @@ export function TaskList({ status, tasks, onEdit, onDelete, onDrop }: Props) {
       <div className="mb-3 flex items-center gap-2 px-1">
         <span className={`h-2 w-2 shrink-0 rounded-full ${config.dot}`} />
         <span className="text-sm font-semibold text-neutral-700">{config.label}</span>
-        <span className={`ml-auto rounded-full px-2 py-0.5 text-xs font-medium ${config.countClass}`}>
+        <span
+          className={`ml-auto rounded-full px-2 py-0.5 text-xs font-medium ${config.countClass}`}
+        >
           {tasks.length}
         </span>
       </div>

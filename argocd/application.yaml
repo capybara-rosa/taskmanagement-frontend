@@ -2,11 +2,11 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: task-manager
-  namespace: argocd          # must match where ArgoCD is installed
+  namespace: argocd # must match where ArgoCD is installed
   labels:
     app.kubernetes.io/name: task-manager
   finalizers:
-    - resources-finalizer.argocd.argoproj.io   # cascade-delete resources on app removal
+    - resources-finalizer.argocd.argoproj.io # cascade-delete resources on app removal
 spec:
   project: default
 
@@ -14,7 +14,7 @@ spec:
     # Replace with your GitHub repo URL
     repoURL: https://github.com/capybara-rosa/taskmanagement-frontend:latest.git
     targetRevision: main
-    path: k8s                # directory of manifests inside the repo
+    path: k8s # directory of manifests inside the repo
 
   destination:
     server: https://kubernetes.default.svc
@@ -22,8 +22,8 @@ spec:
 
   syncPolicy:
     automated:
-      prune: true            # remove K8s resources deleted from git
-      selfHeal: true         # revert manual changes made directly in the cluster
+      prune: true # remove K8s resources deleted from git
+      selfHeal: true # revert manual changes made directly in the cluster
     syncOptions:
       - CreateNamespace=true # create the namespace if it doesn't exist
       - PrunePropagationPolicy=foreground
