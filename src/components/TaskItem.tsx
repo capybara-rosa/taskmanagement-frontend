@@ -31,8 +31,6 @@ const priorityLabels = {
   LOW: 'Low',
 }
 
-
-
 export function TaskItem({ task, onEdit, onDelete }: Props) {
   const [isDragging, setIsDragging] = useState(false)
 
@@ -59,7 +57,7 @@ export function TaskItem({ task, onEdit, onDelete }: Props) {
         </span>
 
         <span
-            className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${priorityColors[task.priority]}`}
+          className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${priorityColors[task.priority]}`}
         >
           {priorityLabels[task.priority]}
         </span>

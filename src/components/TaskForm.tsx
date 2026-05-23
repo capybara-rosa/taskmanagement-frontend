@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type {Priority, Task, TaskRequest, TaskStatus} from '../types'
+import type { Priority, Task, TaskRequest, TaskStatus } from '../types'
 
 interface Props {
   task?: Task | null
@@ -21,7 +21,7 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
       description: description || undefined,
       status,
       dueAt: new Date(dueAt).toISOString(),
-      priority
+      priority,
     })
   }
 
@@ -80,10 +80,10 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
           Priority
         </label>
         <select
-            id="task-priority"
-            value={priority}
-            onChange={(e) => setPriority(e.target.value as Priority)}
-            className="w-full rounded border px-3 py-2"
+          id="task-priority"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value as Priority)}
+          className="w-full rounded border px-3 py-2"
         >
           <option value="HIGH">High</option>
           <option value="MEDIUM">Medium</option>

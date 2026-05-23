@@ -22,7 +22,7 @@ function sortByPriority(tasks: Task[]): Task[] {
   return [...tasks].sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority])
 }
 
-function  sortBy(tasks: Task[]): Task[] {
+function sortBy(tasks: Task[]): Task[] {
   return sortByPriority(sortByDueDateAsc(tasks))
 }
 
@@ -118,7 +118,7 @@ export function TasksPage() {
         description: task.description,
         status: newStatus,
         dueAt: task.dueAt,
-        priority: task.priority
+        priority: task.priority,
       })
       loadTasks()
     } catch {

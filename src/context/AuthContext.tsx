@@ -24,7 +24,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => setToken(null), [setToken])
 
   return (
-    <AuthContext.Provider value={{ token, setToken, isAuthenticated: import.meta.env.DEV || !!token, logout }}>
+    <AuthContext.Provider
+      value={{ token, setToken, isAuthenticated: import.meta.env.DEV || !!token, logout }}
+    >
       {children}
     </AuthContext.Provider>
   )
