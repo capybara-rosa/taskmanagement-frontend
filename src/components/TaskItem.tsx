@@ -19,6 +19,20 @@ const statusLabels = {
   DONE: 'Done',
 }
 
+const priorityColors = {
+  HIGH: 'bg-red-100 text-red-800',
+  MEDIUM: 'bg-yellow-100 text-yellow-800',
+  LOW: 'bg-green-100 text-green-800',
+}
+
+const priorityLabels = {
+  HIGH: 'High',
+  MEDIUM: 'Medium',
+  LOW: 'Low',
+}
+
+
+
 export function TaskItem({ task, onEdit, onDelete }: Props) {
   const [isDragging, setIsDragging] = useState(false)
 
@@ -42,6 +56,12 @@ export function TaskItem({ task, onEdit, onDelete }: Props) {
           className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${statusColors[task.status]}`}
         >
           {statusLabels[task.status]}
+        </span>
+
+        <span
+            className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${priorityColors[task.priority]}`}
+        >
+          {priorityLabels[task.priority]}
         </span>
       </div>
 

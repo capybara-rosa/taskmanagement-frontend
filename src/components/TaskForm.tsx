@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Task, TaskRequest, TaskStatus } from '../types'
+import type {Priority, Task, TaskRequest, TaskStatus} from '../types'
 
 interface Props {
   task?: Task | null
@@ -12,6 +12,7 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
   const [description, setDescription] = useState(task?.description ?? '')
   const [status, setStatus] = useState<TaskStatus>(task?.status ?? 'TODO')
   const [dueAt, setDueAt] = useState(task ? task.dueAt.slice(0, 16) : '')
+  const [priority, setPriority] = useState<Priority>(task?.priority ?? 'MEDIUM')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,6 +21,7 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
       description: description || undefined,
       status,
       dueAt: new Date(dueAt).toISOString(),
+      priority
     })
   }
 
@@ -70,6 +72,22 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
           <option value="TODO">To Do</option>
           <option value="IN_PROGRESS">In Progress</option>
           <option value="DONE">Done</option>
+        </select>
+      </div>
+
+      <div className="mb-4">
+        <label htmlFor="task-priority" className="mb-1 block text-sm font-medium">
+          Priority
+        </label>
+        <select
+            id="task-priority"
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as Priority)}
+            className="w-full rounded border px-3 py-2"
+        >
+          <option value="HIGH">High</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="LOW">Low</option>
         </select>
       </div>
 

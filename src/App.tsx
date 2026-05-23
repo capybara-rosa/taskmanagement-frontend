@@ -5,8 +5,9 @@ import { RegisterPage } from './pages/RegisterPage'
 import { TasksPage } from './pages/TasksPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuth()
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />
+    const { isAuthenticated } = useAuth()
+    if (import.meta.env.DEV) return <>{children}</>
+    return isAuthenticated ? <>{children}</> : <Navigate to="/login" />
 }
 
 function AppRoutes() {

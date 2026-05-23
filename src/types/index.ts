@@ -1,5 +1,7 @@
 export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE'
 
+export type Priority = 'LOW' | 'MEDIUM' | 'HIGH'
+
 export interface Task {
   id: number
   title: string
@@ -11,6 +13,7 @@ export interface Task {
   updatedById?: number
   updatedByTS?: string
   versionId: number
+  priority: Priority
 }
 
 export interface TaskRequest {
@@ -18,6 +21,7 @@ export interface TaskRequest {
   description?: string
   status: TaskStatus
   dueAt: string
+  priority: Priority
 }
 
 export interface PagedResponse<T> {

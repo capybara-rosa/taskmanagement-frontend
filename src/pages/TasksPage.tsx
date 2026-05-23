@@ -12,6 +12,20 @@ function sortByDueDateAsc(tasks: Task[]): Task[] {
   return [...tasks].sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime())
 }
 
+const PRIORITY_ORDER: Record<string, number> = {
+  HIGH: 0,
+  MEDIUM: 1,
+  LOW: 2,
+}
+
+function sortByPriority(tasks: Task[]): Task[] {
+  return [...tasks].sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority])
+}
+
+function  sortBy(tasks: Task[]): Task[] {
+  return sortByPriority(sortByDueDateAsc(tasks))
+}
+
 export function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [editingTask, setEditingTask] = useState<Task | null>(null)
@@ -47,9 +61,9 @@ export function TasksPage() {
       groups[task.status].push(task)
     }
     return {
-      TODO: sortByDueDateAsc(groups.TODO),
-      IN_PROGRESS: sortByDueDateAsc(groups.IN_PROGRESS),
-      DONE: sortByDueDateAsc(groups.DONE),
+      TODO: sortBy(groups.TODO),
+      IN_PROGRESS: sortBy(groups.IN_PROGRESS),
+      DONE: sortBy(groups.DONE),
     }
   }, [tasks])
 
@@ -104,6 +118,7 @@ export function TasksPage() {
         description: task.description,
         status: newStatus,
         dueAt: task.dueAt,
+        priority: task.priority
       })
       loadTasks()
     } catch {
