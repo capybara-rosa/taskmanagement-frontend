@@ -11,7 +11,7 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
   const [title, setTitle] = useState(task?.title ?? '')
   const [description, setDescription] = useState(task?.description ?? '')
   const [status, setStatus] = useState<TaskStatus>(task?.status ?? 'TODO')
-  const [dueAt, setDueAt] = useState(task ? task.dueAt.slice(0, 16) : '')
+  const [dueAt, setDueAt] = useState(task ? task.dueAt.slice(0, 10) : '')
   const [priority, setPriority] = useState<Priority>(task?.priority ?? 'MEDIUM')
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -20,7 +20,7 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
       title,
       description: description || undefined,
       status,
-      dueAt: new Date(dueAt).toISOString(),
+      dueAt: new Date(`${dueAt}T23:59:59`).toISOString(),
       priority,
     })
   }
@@ -97,7 +97,7 @@ export function TaskForm({ task, onSubmit, onCancel }: Props) {
         </label>
         <input
           id="task-due-at"
-          type="datetime-local"
+          type="date"
           value={dueAt}
           onChange={(e) => setDueAt(e.target.value)}
           required

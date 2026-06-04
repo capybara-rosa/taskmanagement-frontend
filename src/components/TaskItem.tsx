@@ -31,6 +31,17 @@ const priorityLabels = {
   LOW: 'Low',
 }
 
+function dueDateColor(dueAt: string): string {
+  const today = new Date()
+  const due = new Date(dueAt)
+  const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  const dueDate = new Date(due.getFullYear(), due.getMonth(), due.getDate())
+
+  if (dueDate < todayDate) return 'text-red-500'
+  if (dueDate.getTime() === todayDate.getTime()) return 'text-blue-500'
+  return 'text-neutral-400'
+}
+
 export function TaskItem({ task, onEdit, onDelete }: Props) {
   const [isDragging, setIsDragging] = useState(false)
 
@@ -67,7 +78,7 @@ export function TaskItem({ task, onEdit, onDelete }: Props) {
         <p className="mb-3 text-xs leading-relaxed text-neutral-500">{task.description}</p>
       )}
 
-      <p className="mb-3 text-xs text-neutral-400">
+      <p className={`mb-3 text-xs ${dueDateColor(task.dueAt)}`}>
         Due{' '}
         {new Date(task.dueAt).toLocaleDateString('en-UK', {
           month: 'short',
